@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "ioredis": "^5.4.1",
+    "lodash": "^4.17.21",
+    "moment-timezone": "^0.5.45",
+    "node-cron": "^3.0.3",
+    "request": "^2.88.2"
+  }
+}

@@ -28,11 +28,11 @@ class CreateTask {
             const transformedObject = this.transformInput({ taskId, meta });
             meta = _.get(transformedObject, 'meta', {});
             const taskMeta = ['meta', JSON.stringify(meta), 'queue', queue];
-            await this.tascheRedisRepo.setKeysInHashWithExpiryAtTimeOrNot('{ShareChatTask}', taskId, taskMeta, false);
-            await this.tascheRedisRepo.addToSet('{ShareChatTaskQueue}', queue, taskId);
-            const [err, res] = await constants.general.invoker(this.tascheRedisRepo.addToSortedSetWithExpiryAtTime('{ShareChatTasksToBeDispatched}', thatDay, secondInThatDay, secondInThatDay, false));
+            await this.tascheRedisRepo.setKeysInHashWithExpiryAtTimeOrNot('{Task}', taskId, taskMeta, false);
+            await this.tascheRedisRepo.addToSet('{TaskQueue}', queue, taskId);
+            const [err, res] = await constants.general.invoker(this.tascheRedisRepo.addToSortedSetWithExpiryAtTime('{TasksToBeDispatched}', thatDay, secondInThatDay, secondInThatDay, false));
             if(err) {
-                this.tascheRedisRepo.removeFromSet('{ShareChatTaskQueue}', queue, taskId);
+                this.tascheRedisRepo.removeFromSet('{TaskQueue}', queue, taskId);
                 throw {
                     type: 'FAILED',
                     message: err.message

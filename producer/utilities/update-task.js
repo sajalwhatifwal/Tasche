@@ -11,7 +11,7 @@ class UpdateTask {
         let { taskId, meta, triggerAtEpoch } = options;
         let updatedTaskMeta = {}, newQueue = null;
         try {
-            let [taskErr, taskMeta] = await constants.general.invoker(this.tascheRedisRepo.getWholeHash('{ShareChatTask}', taskId));
+            let [taskErr, taskMeta] = await constants.general.invoker(this.tascheRedisRepo.getWholeHash('{Task}', taskId));
             if(taskErr) {
                 throw {
                     type: 'TASK_NOT_FOUND',
@@ -32,7 +32,7 @@ class UpdateTask {
                 const secondInThatDay = momentTz(triggerAtEpoch).tz("Asia/Kolkata").diff(momentTz(triggerAtEpoch).tz('Asia/Kolkata').startOf('day'), 'seconds');
                 const thatDay = momentTz(triggerAtEpoch).tz('Asia/Kolkata').format('YYYY-MM-DD');
                 newQueue = `${thatDay}_${secondInThatDay}`;
-                let [switchErr, switched] = await constants.general.invoker(this.tascheRedisRepo.switchBetweenSets(`{ShareChatTaskQueue}_${previousQueue}`, `{ShareChatTaskQueue}_${newQueue}`, taskId));
+                let [switchErr, switched] = await constants.general.invoker(this.tascheRedisRepo.switchBetweenSets(`{TaskQueue}_${previousQueue}`, `{TaskQueue}_${newQueue}`, taskId));
                 if(switchErr) {
                     throw {
                         type: 'FAILED',
@@ -52,7 +52,7 @@ class UpdateTask {
                 newTaskMeta.push(key, updatedTaskMeta[key]);
             }
             if(_.size(newTaskMeta)) {
-                let [updateErr, updated] = await constants.general.invoker(this.tascheRedisRepo.setKeysInHashWithExpiryAtTimeOrNot('{ShareChatTask}', taskId, newTaskMeta, false));
+                let [updateErr, updated] = await constants.general.invoker(this.tascheRedisRepo.setKeysInHashWithExpiryAtTimeOrNot('{Task}', taskId, newTaskMeta, false));
                 if(updateErr) {
                     throw {
                         type: 'FAILED',

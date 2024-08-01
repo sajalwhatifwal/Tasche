@@ -7,7 +7,7 @@ class DeleteTask {
 
     async process(options) {
         const taskId = _.get(options, 'taskId', null);
-        let [taskErr, taskQueue] = await constants.general.invoker(this.tascheRedisRepo.getKeyFromHash('{ShareChatTask}', taskId, 'queue'));
+        let [taskErr, taskQueue] = await constants.general.invoker(this.tascheRedisRepo.getKeyFromHash('{Task}', taskId, 'queue'));
         if(taskErr) {
             return Promise.reject({
                 type: 'FAILED',
@@ -20,14 +20,14 @@ class DeleteTask {
                 msg: 'No such task exists!'
             });
         }
-        let [remErr, removed] = await constants.general.invoker(this.tascheRedisRepo.removeFromSet('{ShareChatTaskQueue}', taskQueue, taskId));
+        let [remErr, removed] = await constants.general.invoker(this.tascheRedisRepo.removeFromSet('{TaskQueue}', taskQueue, taskId));
         if(remErr) {
             return Promise.reject({
                 type: 'FAILED',
                 msg: _.get(remErr, 'message', null)
             });
         }
-        this.tascheRedisRepo.deleteKey('{ShareChatTask}', taskId);
+        this.tascheRedisRepo.deleteKey('{Task}', taskId);
         return Promise.resolve({
             type: 'SUCCESS',
             msg: !removed ? 'Task already executed!' : 'Task deleted successfully!'
