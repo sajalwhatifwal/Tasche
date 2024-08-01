@@ -1,0 +1,11 @@
+node_modules
+.env
+.vscode
+package-lock.json
+vscode-root
+launch.json
+*log
+.DS_Store
+coverage
+reports
+.idea/
